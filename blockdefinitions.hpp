@@ -8,11 +8,6 @@ struct block{
     block(){
         for(auto i = 0; i < 512; i++)
             bytes_s[i] = (unsigned char) 0;
-        for(int i = 0; i < 512; i++){
-            if(i == 511){
-                std::cout << i << " " << std::endl;
-            }
-        }
     }
 };
 

@@ -7,7 +7,7 @@ VirtualHdd::VirtualHdd()
 }
 
 VirtualHdd::~VirtualHdd(){
-    delete[] cylinder;
+    //delete[] cylinder;
 }
 
 
@@ -18,19 +18,15 @@ int VirtualHdd::getSectorSize(){
 int VirtualHdd::getNextSector()
 {
     int next = 0;
-//    for(auto i = 0; i < cylinderamount; i++){
-//        for(auto j = 0; j < 5; i++){
-//            for(auto k = 0; k < 60; k++){
-//                for(auto l = 0; l < 512; l++){
-//                    unsigned int value = cylinder[i].track[j].sector[k].bytes_s[l];
-//                    if(value == 0)
-//                        break;
-//                    std::cout << "here " << value << std::endl;
-//                    std::getchar();
+    for(auto i = 0; i < 10; i++){
+        for(auto j = 0; j < 5; j++){
+            for(auto k = 0; k < 60; k++){
+                for(auto l = 0; l < 512; l++){
+                    auto a = cylinder[i].track[j].sector[k].bytes_s[l];
+                }
+            }
+        }
+    }
 
-//                }
-//            }
-//        }
-//    }
     return 0;
 }
