@@ -7,7 +7,7 @@ VirtualHdd::VirtualHdd()
 }
 
 VirtualHdd::~VirtualHdd(){
-    //delete[] cylinder;
+    delete[] cylinder;
 }
 
 

@@ -19,8 +19,8 @@ void System::writeFile(){
     fat32.addName(file_name, available_sector);
     file.open(file_name, std::ios::in);
     char *buffer = new char[512];
-    char c;
-    file.read(buffer, 4);
+//    file.read(buffer, 4);
+//    buffer[5] = '\0';
     std::cout << buffer << std::endl;
     if (file)
         std::cout << "all characters read successfully.";
