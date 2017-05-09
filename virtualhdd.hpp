@@ -8,12 +8,15 @@ class VirtualHdd
   public:
     VirtualHdd();
     ~VirtualHdd();
-    int getSectorSize();
-    int getNextSector();
+    int getClusterSize();
+    availablesector getNextSector();
+    void write(char* buffer, availablesector sector);
   private:
+    unsigned char* getbuffer(availablesector sector);
+
     track_array *cylinder;
-    int cylinderamount = 10;
-    int sector_size = 4;
+    const int cylinder_amount = 10;
+    int cluster_size = 4;
 };
 
 #endif // VIRTUALHDD_HPP

@@ -11,7 +11,7 @@
 class System
 {
   public:
-    System(std::string filename);
+    System(std::string file_name);
     void writeFile();
     ~System();
   private:
@@ -22,8 +22,8 @@ class System
     std::streampos calculateFileSize();
 
     std::ifstream file;
-    std::string filename;
-    int hdd_sector_size = hdd.getSectorSize();
+    std::string file_name;
+    int hdd_cluster_size = hdd.getClusterSize();
 
 };
 

@@ -1,9 +1,9 @@
 #include "virtualhdd.hpp"
+#include <string.h>
 #include <iostream>
 VirtualHdd::VirtualHdd()
 {
-   cylinder = new track_array[cylinderamount];
-   std::cout << "constructed" << std::endl;
+   cylinder = new track_array[cylinder_amount];
 }
 
 VirtualHdd::~VirtualHdd(){
@@ -11,22 +11,40 @@ VirtualHdd::~VirtualHdd(){
 }
 
 
-int VirtualHdd::getSectorSize(){
-    return sector_size;
+int VirtualHdd::getClusterSize(){
+    return cluster_size;
 }
 
-int VirtualHdd::getNextSector()
+availablesector VirtualHdd::getNextSector()
 {
-    int next = 0;
-    for(auto i = 0; i < 10; i++){
-        for(auto j = 0; j < 5; j++){
-            for(auto k = 0; k < 60; k++){
-                for(auto l = 0; l < 512; l++){
-                    auto a = cylinder[i].track[j].sector[k].bytes_s[l];
-                }
+    for(int track = 0; track < TRACKSIZE; track++){
+        for(int cylin = 0; cylin < cylinder_amount; cylin++){
+            for(int cluster = 0; cluster < SECTORSIZE; cluster+=4){
+                auto sector = cluster*cluster_size;
+                if(cylinder->isClusterAvailable(track, sector))
+                    return availablesector(cylin, track, sector);
             }
         }
     }
 
-    return 0;
+    return availablesector();
 }
+
+void VirtualHdd::write(char *buffer, availablesector sector)
+{
+    auto sec_buffer = getbuffer(sector);
+
+    for(int i = 0; i < 512; i++){
+        sec_buffer[i] = buffer[i];
+    }
+    std::cout << buffer << std::endl;
+//    std::cout << sec_buffer << std::endl;
+    std::getchar();
+}
+
+unsigned char* VirtualHdd::getbuffer(availablesector sector)
+{
+    return cylinder[sector.cylinder_index].track[sector.track_index].sector[sector.sector_index].bytes_s;
+}
+
+

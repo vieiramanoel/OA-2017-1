@@ -4,8 +4,13 @@
 
 int main(int argc, char *argv[])
 {
-    std::string filename("teste.txt");
-    System system(filename);
-    system.writeFile();
+    if(argc == 2){
+        std::string filename(argv[1]);
+        System system(filename);
+        system.writeFile();
+    }
+    else{
+        std::cout << "no args" << std::endl;
+    }
     return 0;
 }
