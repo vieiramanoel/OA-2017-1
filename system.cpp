@@ -3,6 +3,8 @@
 System::System(std::string filename)
 {
     file_name = filename;
+    file = std::ifstream(filename, std::ifstream::binary);
+    file.seekg(0, std::ios::beg);
 }
 
 System::~System(){
@@ -17,30 +19,37 @@ void System::writeFile(){
         return;
     auto available_sector = hdd.getNextSector();
     fat32.addName(file_name, available_sector);
-    file.open(file_name, std::ios::in);
-    char *buffer = new char[512];
-//    file.read(buffer, 4);
-//    buffer[5] = '\0';
-    std::cout << buffer << std::endl;
-    if (file)
-        std::cout << "all characters read successfully.";
-    else
-        std::cout << "error: only " << file.gcount() << " could be read";
-    file.close();
-//    for(int cluster = clusters; cluster > 0; cluster--){
-//        for(int i = 0; i < hdd.getClusterSize(); i++){
-//            //file.read(buffer, 512);
-//            file.getline(buffer, 512);
-//            file.seekg(0, std::ios::beg);
-//            std::cout << buffer << std::endl;
-//            hdd.write(buffer, available_sector);
-//            do{
-//                available_sector.track_index++;
-//            }while(!available_sector);
-//        }
-//    }
 
-    delete[] buffer;
+    file.seekg(0, std::ios::beg);
+    for(int cluster = clusters; cluster > 0; cluster--){
+        for(int i = 0; i < hdd.getClusterSize(); i++){
+
+            char *buffer = new char[512];
+
+            if(file){
+                file.read(buffer, 512);
+
+                if (file){
+                    if(!file.eof())
+                        file.seekg(0, std::ios::cur);
+                }
+            }
+            else if(!file.eof()){
+                std::cout << "file error" << std::endl;
+                return;
+            }
+
+            hdd.write(buffer, available_sector);
+
+            do{
+                available_sector.track_index++;
+            }while(!available_sector);
+
+            delete[] buffer;
+        }
+    }
+
+
 }
 
 int System::calculateClusters(){
@@ -54,8 +63,7 @@ int System::calculateClusters(){
 }
 
 std::streampos System::calculateFileSize(){
-    file.open(file_name, std::ifstream::binary);
-    if(file.is_open()){
+    if(file){
         auto begin = file.tellg();
         file.seekg(0, std::ios::end);
         auto end = file.tellg();
@@ -63,6 +71,6 @@ std::streampos System::calculateFileSize(){
     }
     else
         std::cout << "could not open file" << std::endl;
-    file.close();
+
     return std::streampos(-1);
 }

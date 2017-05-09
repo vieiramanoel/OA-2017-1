@@ -4,7 +4,7 @@ QT -= gui
 TARGET = OA
 CONFIG += console
 CONFIG -= app_bundle
-QMAKE_CXXFLAGS += -std=c++14
+QMAKE_CXXFLAGS += -std=c++11
 TEMPLATE = app
 
 SOURCES += main.cpp \

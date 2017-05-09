@@ -32,19 +32,13 @@ availablesector VirtualHdd::getNextSector()
 
 void VirtualHdd::write(char *buffer, availablesector sector)
 {
-    auto sec_buffer = getbuffer(sector);
+    unsigned char* sec_buffer = getbuffer(sector);
 
-    for(int i = 0; i < 512; i++){
-        sec_buffer[i] = buffer[i];
-    }
-    std::cout << buffer << std::endl;
-//    std::cout << sec_buffer << std::endl;
-    std::getchar();
 }
 
 unsigned char* VirtualHdd::getbuffer(availablesector sector)
 {
-    return cylinder[sector.cylinder_index].track[sector.track_index].sector[sector.sector_index].bytes_s;
+    //return (unsigned char*) cylinder[sector.cylinder_index].track[sector.track_index].sector[sector.sector_index].bytes_s;
 }
 
 
