@@ -4,6 +4,7 @@
 #define TRACKSIZE 5
 #define SECTORSIZE 60
 #define CLUSTEZSIZE 4
+
 struct block{
     unsigned char bytes_s[512];
     block(){
@@ -46,7 +47,8 @@ struct availablesector{
                 && a.sector_index == -1);
     }
     bool operator !(){
-        return (!this == true);
+        return !(this->cylinder_index == -1 && this->track_index == -1
+                && this->sector_index == -1);
     }
 };
 

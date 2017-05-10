@@ -1,5 +1,6 @@
 #include "system.hpp"
 #include <iostream>
+
 System::System(std::string filename)
 {
     file_name = filename;
@@ -54,7 +55,6 @@ void System::writeFile(){
 
 int System::calculateClusters(){
     auto filesize = calculateFileSize();
-    std::cout << filesize << std::endl;
     int file = (int) filesize;
     if(file == -1)
         return -1;
@@ -64,13 +64,14 @@ int System::calculateClusters(){
 
 std::streampos System::calculateFileSize(){
     if(file){
+        file.seekg(0, std::ios::beg);
         auto begin = file.tellg();
         file.seekg(0, std::ios::end);
         auto end = file.tellg();
         return end-begin;
     }
     else
-        std::cout << "could not open file" << std::endl;
+        std::cout << "file error at calculate file size" << std::endl;
 
     return std::streampos(-1);
 }
