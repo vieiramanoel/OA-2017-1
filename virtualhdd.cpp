@@ -21,7 +21,7 @@ availablesector VirtualHdd::getNextSector()
         for(int cylin = 0; cylin < cylinder_amount; cylin++){
             for(int cluster = 0; cluster < SECTORSIZE; cluster+=4){
                 auto sector = cluster*cluster_size;
-                if(cylinder->isClusterAvailable(track, sector))
+                if(cylinder[cylin].isClusterAvailable(track, sector))
                     return availablesector(cylin, track, sector);
             }
         }
