@@ -42,10 +42,10 @@ void System::writeFile(){
 
             hdd.write(buffer, available_sector);
 
-            do{
-                available_sector.track_index++;
-            }while(!available_sector);
-
+//            do{
+//                available_sector.track_index++;
+//            }while(!available_sector);
+// erro na logica do setor disponivel
             delete[] buffer;
         }
     }

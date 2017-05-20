@@ -22,7 +22,11 @@ availablesector VirtualHdd::getNextSector()
             for(int cluster = 0; cluster < SECTORSIZE; cluster+=4){
                 auto sector = cluster*cluster_size;
                 if(cylinder[cylin].isClusterAvailable(track, sector))
+                {
+                    std::cout << "at " << cylin << " " <<
+                                 track << " " << sector << std::endl;
                     return availablesector(cylin, track, sector);
+                }
             }
         }
     }
@@ -36,9 +40,6 @@ void VirtualHdd::write(char *buffer, availablesector sector)
     for(int i = 0; i < 512; i++){
         sec_buffer[i] = (unsigned char) buffer[i];
     }
-    std::cout << sec_buffer << std::endl;
-    getchar();
-
 }
 
 unsigned char* VirtualHdd::getbuffer(availablesector sector)
