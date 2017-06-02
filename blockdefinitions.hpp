@@ -5,7 +5,7 @@
 #define SECTORSIZE 60
 #define CLUSTEZSIZE 4
 #include <iostream>
-
+#include <ostream>
 struct block{
     unsigned char bytes_s[512];
     block(){
@@ -24,7 +24,7 @@ struct track_array{
         for(int i = sector_; i < sector_+CLUSTEZSIZE; i++){
             if(track[track_].sector[i].bytes_s[0] != (unsigned char) 0)
             {
-                std::cout << "found cluster available" << std::endl;
+                //return if cluster isn't available
                 return false;
             }
         }
@@ -46,14 +46,12 @@ struct availablesector{
         track_index = -1;
         sector_index = -1;
     }
-    bool operator==(availablesector a)const{
-        return (a.cylinder_index == -1 && a.track_index == -1
-                && a.sector_index == -1);
-    }
-    bool const operator !() const{
-        return (this->cylinder_index == -1 && this->track_index == -1
-                && this->sector_index == -1);
-    }
 };
 
+inline std::ostream& operator<<(std::ostream& os, const availablesector& a){
+    os << "Cylin Index " << a.cylinder_index << std::endl;
+    os << "Track Index " << a.track_index << std::endl;
+    os << "Sector Index " <<  a.sector_index;
+    return os;
+}
 #endif // BLOCKDEFINITIONS_HPP

@@ -23,8 +23,7 @@ availablesector VirtualHdd::getNextSector()
                 auto sector = cluster*cluster_size;
                 if(cylinder[cylin].isClusterAvailable(track, sector))
                 {
-                    std::cout << "at " << cylin << " " <<
-                                 track << " " << sector << std::endl;
+                    //if you wanna know what indices were found, simply print what's been returned with a cout
                     return availablesector(cylin, track, sector);
                 }
             }
@@ -40,6 +39,18 @@ void VirtualHdd::write(char *buffer, availablesector sector)
     for(int i = 0; i < 512; i++){
         sec_buffer[i] = (unsigned char) buffer[i];
     }
+}
+
+availablesector VirtualHdd::getNextTrack(availablesector currsector)
+{
+    while(cylinder[currsector.cylinder_index].track[currsector.track_index].sector[currsector.sector_index].bytes_s[0] != 0){
+        if(currsector.track_index == 5){
+            currsector = this->getNextSector();
+        }else{
+            currsector.track_index++;
+        }
+    }
+    return currsector;
 }
 
 unsigned char* VirtualHdd::getbuffer(availablesector sector)

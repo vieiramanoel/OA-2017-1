@@ -11,6 +11,7 @@ class VirtualHdd
     int getClusterSize();
     availablesector getNextSector();
     void write(char* buffer, availablesector sector);
+    availablesector getNextTrack(availablesector currsector);
   private:
     unsigned char* getbuffer(availablesector sector);
 
