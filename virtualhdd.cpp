@@ -19,7 +19,7 @@ availablesector VirtualHdd::getNextSector()
 {
     for(int track = 0; track < TRACKSIZE; track++){
         for(int cylin = 0; cylin < cylinder_amount; cylin++){
-            for(int cluster = 0; cluster < SECTORSIZE; cluster+=4){
+            for(int cluster = 0; cluster < SECTORSIZE; cluster++){
                 auto sector = cluster*cluster_size;
                 if(cylinder[cylin].isClusterAvailable(track, sector))
                 {
@@ -43,7 +43,8 @@ void VirtualHdd::write(char *buffer, availablesector sector)
 
 availablesector VirtualHdd::getNextTrack(availablesector currsector)
 {
-    while(cylinder[currsector.cylinder_index].track[currsector.track_index].sector[currsector.sector_index].bytes_s[0] != 0){
+
+    while(!cylinder[currsector.cylinder_index].isClusterAvailable(currsector.track_index, currsector.sector_index)){
         if(currsector.track_index == 5){
             currsector = this->getNextSector();
         }else{

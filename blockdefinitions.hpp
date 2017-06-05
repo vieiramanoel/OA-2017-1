@@ -21,6 +21,8 @@ struct sector_array{
 struct track_array{
     sector_array track[TRACKSIZE];
     bool isClusterAvailable(int track_, int sector_){
+        if(sector_ > SECTORSIZE - CLUSTEZSIZE)
+            return false;
         for(int i = sector_; i < sector_+CLUSTEZSIZE; i++){
             if(track[track_].sector[i].bytes_s[0] != (unsigned char) 0)
             {

@@ -16,35 +16,40 @@ System::~System(){
 void System::writeFile(){
 
     auto clusters = calculateClusters();
-    if(clusters == -1)
+    if(clusters == -1){
         return;
+    }
     auto available_sector = hdd.getNextSector();
-    fat32.addName(file_name, available_sector);
-
     file.seekg(0, std::ios::beg);
-    for(int cluster = clusters; cluster > 0; cluster--){
-        for(int i = 0; i < hdd.getClusterSize(); i++){
-
+    for(int cluster = 0; cluster < clusters; cluster++){
+        auto sector = available_sector;
+        for(int i = 0; i < hdd.getClusterSize(); i++, sector.sector_index++){
             char *buffer = new char[512];
 
             if(file){
                 file.read(buffer, 512);
-
-                if (file){
-                    if(!file.eof())
-                        file.seekg(0, std::ios::cur);
-                }
             }
             else if(!file.eof()){
                 std::cout << "file error" << std::endl;
+                delete[] buffer;
                 return;
             }
+            else{
+                if(file.eof()){
+                     //std::cout << "EOF reached" << std::endl;
+                     //You can uncomment the line above to check if EOF was hit
+                     buffer[0] = '\0';
+                     //here is necessary to add a \0 to every cluster's sector to identify
+                     //if it's being used in this case as a EOF
+                }
+            }
 
-            hdd.write(buffer, available_sector);
-            available_sector = hdd.getNextTrack(available_sector);
-            std::cout << available_sector << std::endl;
+            hdd.write(buffer, sector);
             delete[] buffer;
         }
+        available_sector = hdd.getNextTrack(available_sector);
+        //need split fat insertion in two functions
+        //fat32.addName(file_name, available_sector, iseof);
     }
 
 
@@ -52,10 +57,10 @@ void System::writeFile(){
 
 int System::calculateClusters(){
     auto filesize = calculateFileSize();
-    int file = (int) filesize;
+    int file = (int) (filesize);
     if(file == -1)
         return -1;
-    auto clusters = ceil(file/hdd_cluster_size);
+    auto clusters = ceil( ( (float)file/(512*4) ) );
     return clusters;
 }
 
@@ -65,7 +70,7 @@ std::streampos System::calculateFileSize(){
         auto begin = file.tellg();
         file.seekg(0, std::ios::end);
         auto end = file.tellg();
-        return end-begin;
+       return end-begin;
     }
     else
         std::cout << "file error at calculate file size" << std::endl;
