@@ -11,10 +11,11 @@
 class System
 {
   public:
-    System(std::string file_name);
-    void writeFile();
+    System();
     ~System();
-  private:
+    void readFile(std::string filename);
+    void writeFile(std::string filename);
+private:
     VirtualHdd hdd;
     FatTable fat32;
 
@@ -22,9 +23,9 @@ class System
     std::streampos calculateFileSize();
 
     std::ifstream file;
-    std::string file_name;
     int hdd_cluster_size = hdd.getClusterSize();
 
+    void setFile(std::string filename);
 };
 
 #endif // SYSTEM_HPP

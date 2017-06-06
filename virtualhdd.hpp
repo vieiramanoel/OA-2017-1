@@ -12,8 +12,8 @@ class VirtualHdd
     availablesector getNextSector();
     void write(char* buffer, availablesector sector);
     availablesector getNextTrack(availablesector currsector);
-  private:
     unsigned char* getbuffer(availablesector sector);
+  private:
 
     track_array *cylinder;
     const int cylinder_amount = 10;

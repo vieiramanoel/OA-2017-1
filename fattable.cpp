@@ -8,8 +8,7 @@ FatTable::FatTable()
 
 FatTable::~FatTable()
 {
-    if(last != nullptr)
-        delete last;
+
 }
 
 void FatTable::addNewName(std::string file_name, availablesector sector)
@@ -19,6 +18,11 @@ void FatTable::addNewName(std::string file_name, availablesector sector)
     addName(sector, false);
 }
 
+int FatTable::getPosition(std::string filename)
+{
+    auto pos = table.find(filename);
+    return calculatePosition(pos->second);
+}
 
 void FatTable::addName(availablesector sector, bool iseof)
 {
@@ -28,6 +32,7 @@ void FatTable::addName(availablesector sector, bool iseof)
         last->next = position;
     if(iseof)
     {
+        std::cout << sector << std::endl;
         this->sector[position].next = -1;
         last = nullptr;
     }
@@ -42,4 +47,8 @@ int FatTable::calculatePosition(availablesector sector)
     //some questions about position calculation, check later
     return 300*sector.cylinder_index +
             60*sector.track_index + sector.sector_index;
+}
+
+sectorparams FatTable::getSector(int position){
+    return sector[position];
 }

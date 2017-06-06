@@ -39,8 +39,9 @@ void VirtualHdd::write(char *buffer, availablesector sector)
     for(int i = 0; i < 512; i++){
         sec_buffer[i] = (unsigned char) buffer[i];
     }
+//    std::cout << "saved buff: " << sec_buffer << std::endl;
+//    std::cout << "at " << sector << std::endl;
 }
-
 availablesector VirtualHdd::getNextTrack(availablesector currsector)
 {
 

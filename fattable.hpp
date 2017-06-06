@@ -32,7 +32,9 @@ class FatTable
     void addName(availablesector sector,
                  bool iseof);
     void addNewName(std::string file_name, availablesector sector);
-  private:
+    int getPosition(std::string filename);
+    sectorparams getSector(int position);
+private:
     std::unordered_map<std::string, availablesector> table;
     std::vector<sectorparams> sector;
     sectorparams *last;

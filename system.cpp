@@ -1,11 +1,9 @@
 #include "system.hpp"
 #include <iostream>
 
-System::System(std::string filename)
+System::System()
 {
-    file_name = filename;
-    file = std::ifstream(filename, std::ifstream::binary);
-    file.seekg(0, std::ios::beg);
+
 }
 
 System::~System(){
@@ -13,55 +11,60 @@ System::~System(){
         file.close();
 }
 
-void System::writeFile(){
+void System::setFile(std::string filename){
+    file = std::ifstream(filename, std::ifstream::binary);
+    file.seekg(0, std::ios::beg);
+}
 
+void System::writeFile(std::string filename){
+    setFile(filename);
     auto clusters = calculateClusters();
     if(clusters == -1){
         return;
     }
     auto available_sector = hdd.getNextSector();
     file.seekg(0, std::ios::beg);
-    fat32.addNewName(file_name, available_sector);
+    fat32.addNewName(filename, available_sector);
     for(int cluster = 0; cluster < clusters; cluster++){
         auto sector = available_sector;
-        bool iseof{false};
         for(int i = 0; i < hdd.getClusterSize(); i++, sector.sector_index++){
             char *buffer = new char[512];
-
-            if(file){
-                file.read(buffer, 512);
-            }
-            else if(!file.eof()){
-                std::cout << "file error" << std::endl;
-                delete[] buffer;
-                return;
-            }
-            else{
-                if(file.eof()){
-                     //std::cout << "EOF reached" << std::endl;
-                     //You can uncomment the line above to check if EOF was hit
-                     buffer[0] = '\0';
-                     iseof = true;
-                     //here is necessary to add a \0 to every cluster's sector to identify
-                     //if it's being used in this case as an EOF
-                }
-            }
+            file.read(buffer, 511);
+            int read = file.gcount();
+            buffer[read] = '\0';
+            if(read < 511)
+                fat32.addName(sector, true);
+            else
+                fat32.addName(sector, false);
+            std::cout << buffer << std::endl;
 
             hdd.write(buffer, sector);
-            fat32.addName(sector, iseof);
             delete[] buffer;
         }
         available_sector = hdd.getNextTrack(available_sector);
-        //need split FAT insertion in two functions
-        //fat32.addName(file_name, available_sector, iseof);
     }
 
 
 }
 
+void System::readFile(std::string filename){
+    auto pos = fat32.getPosition(filename);
+    auto params = fat32.getSector(pos);
+    std::ofstream extfile("saida.txt");
+    do{
+        std::string buffer = reinterpret_cast<char*>(hdd.getbuffer(params.sector));
+        extfile << buffer;
+        pos = params.next;
+        if(pos != -1)
+            params = fat32.getSector(pos);
+    }while(pos != -1);
+}
+
+
 int System::calculateClusters(){
     auto filesize = calculateFileSize();
     int file = (int) (filesize);
+    std::cout << file << std::endl;
     if(file == -1)
         return -1;
     auto clusters = ceil( ( (float)file/(512*4) ) );
