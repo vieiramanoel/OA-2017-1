@@ -45,7 +45,7 @@ availablesector VirtualHdd::getNextTrack(availablesector currsector)
 {
 
     while(!cylinder[currsector.cylinder_index].isClusterAvailable(currsector.track_index, currsector.sector_index)){
-        if(currsector.track_index == 5){
+        if(currsector.track_index == 4){
             currsector = this->getNextSector();
         }else{
             currsector.track_index++;

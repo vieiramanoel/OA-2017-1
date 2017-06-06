@@ -29,12 +29,15 @@ class FatTable
   public:
     FatTable();
     ~FatTable();
-    void addName(std::string file_name, availablesector cluster,
+    void addName(availablesector sector,
                  bool iseof);
+    void addNewName(std::string file_name, availablesector sector);
   private:
     std::unordered_map<std::string, availablesector> table;
     std::vector<sectorparams> sector;
     sectorparams *last;
+
+    int calculatePosition(availablesector sector);
 };
 
 #endif // FATTABLE_HPP

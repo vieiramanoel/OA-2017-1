@@ -21,8 +21,10 @@ void System::writeFile(){
     }
     auto available_sector = hdd.getNextSector();
     file.seekg(0, std::ios::beg);
+    fat32.addNewName(file_name, available_sector);
     for(int cluster = 0; cluster < clusters; cluster++){
         auto sector = available_sector;
+        bool iseof{false};
         for(int i = 0; i < hdd.getClusterSize(); i++, sector.sector_index++){
             char *buffer = new char[512];
 
@@ -39,16 +41,18 @@ void System::writeFile(){
                      //std::cout << "EOF reached" << std::endl;
                      //You can uncomment the line above to check if EOF was hit
                      buffer[0] = '\0';
+                     iseof = true;
                      //here is necessary to add a \0 to every cluster's sector to identify
-                     //if it's being used in this case as a EOF
+                     //if it's being used in this case as an EOF
                 }
             }
 
             hdd.write(buffer, sector);
+            fat32.addName(sector, iseof);
             delete[] buffer;
         }
         available_sector = hdd.getNextTrack(available_sector);
-        //need split fat insertion in two functions
+        //need split FAT insertion in two functions
         //fat32.addName(file_name, available_sector, iseof);
     }
 
