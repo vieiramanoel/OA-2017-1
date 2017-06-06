@@ -16,11 +16,11 @@ void System::setFile(std::string filename){
     file.seekg(0, std::ios::beg);
 }
 
-void System::writeFile(std::string filename){
+bool System::writeFile(std::string filename){
     setFile(filename);
     auto clusters = calculateClusters();
     if(clusters == -1){
-        return;
+        return false;
     }
     auto available_sector = hdd.getNextSector();
     file.seekg(0, std::ios::beg);
@@ -36,7 +36,6 @@ void System::writeFile(std::string filename){
                 fat32.addName(sector, true);
             else
                 fat32.addName(sector, false);
-            std::cout << buffer << std::endl;
 
             hdd.write(buffer, sector);
             delete[] buffer;
@@ -44,11 +43,13 @@ void System::writeFile(std::string filename){
         available_sector = hdd.getNextTrack(available_sector);
     }
 
-
+    return true;
 }
 
-void System::readFile(std::string filename){
+bool System::readFile(std::string filename){
     auto pos = fat32.getPosition(filename);
+    if(pos == -1)
+        return false;
     auto params = fat32.getSector(pos);
     std::ofstream extfile("saida.txt");
     do{
@@ -58,13 +59,13 @@ void System::readFile(std::string filename){
         if(pos != -1)
             params = fat32.getSector(pos);
     }while(pos != -1);
+    return true;
 }
 
 
 int System::calculateClusters(){
     auto filesize = calculateFileSize();
     int file = (int) (filesize);
-    std::cout << file << std::endl;
     if(file == -1)
         return -1;
     auto clusters = ceil( ( (float)file/(512*4) ) );

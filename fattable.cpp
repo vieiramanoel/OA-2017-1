@@ -21,6 +21,8 @@ void FatTable::addNewName(std::string file_name, availablesector sector)
 int FatTable::getPosition(std::string filename)
 {
     auto pos = table.find(filename);
+    if(pos == table.end())
+        return -1;
     return calculatePosition(pos->second);
 }
 
@@ -32,7 +34,6 @@ void FatTable::addName(availablesector sector, bool iseof)
         last->next = position;
     if(iseof)
     {
-        std::cout << sector << std::endl;
         this->sector[position].next = -1;
         last = nullptr;
     }

@@ -2,21 +2,70 @@
 #include "system.hpp"
 #include <string>
 
-int main(int argc, char *argv[])
+int main()
 {
-    if(argc == 2){
-        std::string filename(argv[1]);
-        System system;
-        system.writeFile(filename);
-        system.readFile(filename);
-    }
-    else{
-        std::cout << "no args" << std::endl;
-    }
+    System system;
     std::string rawentry;
+    int entry{0};
+    std::string filename;
     do{
-        std::cout << "\t**************" << std::endl;
-
-    }while(entry != 5);
+        std::system("clear");
+        std::cout << "\t**********************" << std::endl;
+        std::cout << "\t*****HD SIMULATOR*****" << std::endl;
+        std::cout << "\t**********************" << std::endl;
+        std::cout << "\t  Escolha uma opcao" << std::endl;
+        std::cout << "1 - Adicionar arquivo ao HD" << std::endl;
+        std::cout << "2 - Ler arquivo apartir da FAT" << std::endl;
+        std::cout << "3 - Mostrar Tabela FAT" << std::endl;
+        std::cout << "4 - Sair" << std::endl;
+        std::cout << ">>> ";
+        std::cin >> rawentry;
+        if(rawentry.size() > sizeof(int)){
+            std::cout << "Not cool, int so tem 4bytes, tente de novo" << std::endl;
+        }else{
+            entry = stoi(rawentry);
+        }
+        std::system("clear");
+        bool success;
+        switch (entry) {
+        case 1:
+            std::cout << "Digite o nome do arquivo texto:\n>>> ";
+            std::cin >> filename;
+            success = system.writeFile(filename);
+            if(!success)
+                std::cout << "Tente um arquivo existente na FAT\n "
+                             "ENTER para continar" << std::endl;
+            else
+                std::cout << "Feito! ENTER para continuar" << std::endl;
+            std::cin.get();
+            std::cin.get();
+            break;
+        case 2:
+            std::cout << "Digite o nome do arquivo texto:\n>>> ";
+            std::cin >> filename;
+            success = system.readFile(filename);
+            if(!success)
+                std::cout << "Tente um arquivo existente na FAT\n "
+                             "ENTER para continar" << std::endl;
+            else
+                std::cout << "Feito! ENTER para continuar" << std::endl;
+            std::cin.get();
+            std::cin.get();
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        case 0:
+        default:
+            entry = 0;
+            std::cout << "Entrada inválida, tente novamente\n"
+                         "ENTER para continuar" << std::endl;
+            std::cin.get();
+            std::cin.get();
+            std::system("clear");
+            break;
+        }
+    }while(entry != 4);
     return 0;
 }

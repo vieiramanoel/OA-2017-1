@@ -13,8 +13,8 @@ class System
   public:
     System();
     ~System();
-    void readFile(std::string filename);
-    void writeFile(std::string filename);
+    bool readFile(std::string filename);
+    bool writeFile(std::string filename);
 private:
     VirtualHdd hdd;
     FatTable fat32;
