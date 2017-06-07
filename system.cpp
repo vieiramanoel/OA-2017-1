@@ -24,7 +24,8 @@ bool System::writeFile(std::string filename){
     }
     auto available_sector = hdd.getNextSector();
     file.seekg(0, std::ios::beg);
-    fat32.addNewName(filename, available_sector);
+    std::cout << filesize << std::endl;
+    fat32.addNewName(filename, available_sector, filesize);
     for(int cluster = 0; cluster < clusters; cluster++){
         auto sector = available_sector;
         for(int i = 0; i < hdd.getClusterSize(); i++, sector.sector_index++){
@@ -66,6 +67,7 @@ bool System::readFile(std::string filename){
 int System::calculateClusters(){
     auto filesize = calculateFileSize();
     int file = (int) (filesize);
+    this->filesize = file;
     if(file == -1)
         return -1;
     auto clusters = ceil( ( (float)file/(512*4) ) );
@@ -84,4 +86,11 @@ std::streampos System::calculateFileSize(){
         std::cout << "file error at calculate file size" << std::endl;
 
     return std::streampos(-1);
+}
+
+void System::printSizeTable(){
+    std::cout << "Nome" << "\t\tTamanho em Disco" << "\tSetores\n";
+    fat32.printFileSize();
+    std::cin.get();
+    std::cin.get();
 }

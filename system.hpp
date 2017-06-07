@@ -15,6 +15,7 @@ class System
     ~System();
     bool readFile(std::string filename);
     bool writeFile(std::string filename);
+    void printSizeTable();
 private:
     VirtualHdd hdd;
     FatTable fat32;
@@ -24,7 +25,7 @@ private:
 
     std::ifstream file;
     int hdd_cluster_size = hdd.getClusterSize();
-
+    int filesize;
     void setFile(std::string filename);
 };
 

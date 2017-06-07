@@ -53,6 +53,7 @@ int main()
             std::cin.get();
             break;
         case 3:
+            system.printSizeTable();
             break;
         case 4:
             break;

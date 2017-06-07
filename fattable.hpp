@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
-
+#include <sstream>
 #include "blockdefinitions.hpp"
 
 
@@ -31,15 +31,18 @@ class FatTable
     ~FatTable();
     void addName(availablesector sector,
                  bool iseof);
-    void addNewName(std::string file_name, availablesector sector);
+    void addNewName(std::string file_name, availablesector sector, int filesize);
     int getPosition(std::string filename);
     sectorparams getSector(int position);
+    void printFileSize();
 private:
     std::unordered_map<std::string, availablesector> table;
+    std::unordered_map<std::string, int> size_table;
     std::vector<sectorparams> sector;
     sectorparams *last;
 
     int calculatePosition(availablesector sector);
+    std::string printSectors(std::string filename);
 };
 
 #endif // FATTABLE_HPP

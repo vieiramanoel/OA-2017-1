@@ -11,10 +11,12 @@ FatTable::~FatTable()
 
 }
 
-void FatTable::addNewName(std::string file_name, availablesector sector)
+void FatTable::addNewName(std::string file_name, availablesector sector, int filesize)
 {
     auto add_item = std::pair<std::string, availablesector>(file_name, sector);
     table.insert(add_item);
+    auto add_item_size = std::pair<std::string, int>(file_name, filesize);
+    size_table.insert(add_item_size);
     addName(sector, false);
 }
 
@@ -41,6 +43,24 @@ void FatTable::addName(availablesector sector, bool iseof)
     {
        last = &this->sector[position];
     }
+}
+
+void FatTable::printFileSize()
+{
+   for(auto i : size_table){
+    std::cout << i.first << "\t\t" << i.second << "\t\t" << printSectors(i.first) << std::endl;
+
+   }
+}
+
+std::string FatTable::printSectors(std::string filename){
+    int pos = getPosition(filename);
+    std::ostringstream oss;
+    while(pos != -1){
+        oss << pos << " ";
+        pos = sector[pos].next;
+    }
+    return std::string(oss.str());
 }
 
 int FatTable::calculatePosition(availablesector sector)
