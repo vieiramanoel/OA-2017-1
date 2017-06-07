@@ -16,6 +16,7 @@ class System
     bool readFile(std::string filename);
     bool writeFile(std::string filename);
     void printSizeTable();
+    bool removeFatItem(std::string filename);
 private:
     VirtualHdd hdd;
     FatTable fat32;

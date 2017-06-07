@@ -21,7 +21,12 @@ struct sectorparams
         this->eof = eof;
         this->sector = sector;
     }
-    sectorparams(){}
+    sectorparams(){
+        used = false;
+        eof = false;
+        availablesector sector;
+        next = -1;
+    }
 };
 
 class FatTable
@@ -31,10 +36,11 @@ class FatTable
     ~FatTable();
     void addName(availablesector sector,
                  bool iseof);
-    void addNewName(std::string file_name, availablesector sector, int filesize);
+    bool addNewName(std::string filename, availablesector sector, int filesize);
     int getPosition(std::string filename);
     sectorparams getSector(int position);
     void printFileSize();
+    bool removeItem(std::string filename);
 private:
     std::unordered_map<std::string, availablesector> table;
     std::unordered_map<std::string, int> size_table;

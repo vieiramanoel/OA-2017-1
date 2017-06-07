@@ -11,13 +11,20 @@ FatTable::~FatTable()
 
 }
 
-void FatTable::addNewName(std::string file_name, availablesector sector, int filesize)
+bool FatTable::addNewName(std::string filename, availablesector sector, int filesize)
 {
-    auto add_item = std::pair<std::string, availablesector>(file_name, sector);
-    table.insert(add_item);
-    auto add_item_size = std::pair<std::string, int>(file_name, filesize);
-    size_table.insert(add_item_size);
-    addName(sector, false);
+    int hasfileattable = getPosition(filename);
+    if(hasfileattable != -1){
+            std::cout << "Arquivo já existente na FAT" << std::endl;
+            return false;
+    }else{
+        auto add_item = std::pair<std::string, availablesector>(filename, sector);
+        table.insert(add_item);
+        auto add_item_size = std::pair<std::string, int>(filename, filesize);
+        size_table.insert(add_item_size);
+        addName(sector, false);
+    }
+    return true;
 }
 
 int FatTable::getPosition(std::string filename)
@@ -30,6 +37,7 @@ int FatTable::getPosition(std::string filename)
 
 void FatTable::addName(availablesector sector, bool iseof)
 {
+
     int position = calculatePosition(sector);
     this->sector[position] = sectorparams(true, iseof, sector);
     if(last != nullptr)
@@ -53,7 +61,8 @@ void FatTable::printFileSize()
    }
 }
 
-std::string FatTable::printSectors(std::string filename){
+std::string FatTable::printSectors(std::string filename)
+{
     int pos = getPosition(filename);
     std::ostringstream oss;
     while(pos != -1){
@@ -72,4 +81,19 @@ int FatTable::calculatePosition(availablesector sector)
 
 sectorparams FatTable::getSector(int position){
     return sector[position];
+}
+
+bool FatTable::removeItem(std::string filename)
+{
+    int pos = getPosition(filename);
+    if(pos == -1)
+            return false;
+    while(pos != -1){
+        auto last = &sector[pos];
+        sector[pos] = sectorparams();
+        pos = last->next;
+    }
+    table.erase(filename);
+    size_table.erase(filename);
+    return true;
 }

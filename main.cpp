@@ -16,8 +16,8 @@ int main()
         std::cout << "\t  Escolha uma opcao" << std::endl;
         std::cout << "1 - Adicionar arquivo ao HD" << std::endl;
         std::cout << "2 - Ler arquivo apartir da FAT" << std::endl;
-        std::cout << "3 - Mostrar Tabela FAT" << std::endl;
-        std::cout << "4 - Sair" << std::endl;
+        std::cout << "3 - Apagar arquivo da tabela FAT" << std::endl;
+        std::cout << "4 - Mostrar Tabela FAT" << std::endl;
         std::cout << ">>> ";
         std::cin >> rawentry;
         if(rawentry.size() > sizeof(int)){
@@ -33,7 +33,7 @@ int main()
             std::cin >> filename;
             success = system.writeFile(filename);
             if(!success)
-                std::cout << "Tente um arquivo existente na FAT\n "
+                std::cout << "Tente um arquivo existente no diretório\n "
                              "ENTER para continar" << std::endl;
             else
                 std::cout << "Feito! ENTER para continuar" << std::endl;
@@ -53,9 +53,21 @@ int main()
             std::cin.get();
             break;
         case 3:
-            system.printSizeTable();
+            std::cout << "Digite o nome do arquivo a ser removido\n>>>";
+            std::cin >> filename;
+            success = system.removeFatItem(filename);
+            if(!success)
+                std::cout << "Tente um arquivo existente na FAT\n "
+                             "ENTER para continar" << std::endl;
+            else
+                std::cout << "Feito! ENTER para continuar" << std::endl;
+            std::cin.get();
+            std::cin.get();
             break;
         case 4:
+            system.printSizeTable();
+            break;
+        case 5:
             break;
         case 0:
         default:
@@ -67,6 +79,6 @@ int main()
             std::system("clear");
             break;
         }
-    }while(entry != 4);
+    }while(entry != 5);
     return 0;
 }

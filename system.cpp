@@ -6,17 +6,20 @@ System::System()
 
 }
 
-System::~System(){
+System::~System()
+{
     if(file.is_open())
         file.close();
 }
 
-void System::setFile(std::string filename){
+void System::setFile(std::string filename)
+{
     file = std::ifstream(filename, std::ifstream::binary);
     file.seekg(0, std::ios::beg);
 }
 
-bool System::writeFile(std::string filename){
+bool System::writeFile(std::string filename)
+{
     setFile(filename);
     auto clusters = calculateClusters();
     if(clusters == -1){
@@ -24,8 +27,9 @@ bool System::writeFile(std::string filename){
     }
     auto available_sector = hdd.getNextSector();
     file.seekg(0, std::ios::beg);
-    std::cout << filesize << std::endl;
-    fat32.addNewName(filename, available_sector, filesize);
+    bool added = fat32.addNewName(filename, available_sector, filesize);
+    if(!added)
+        return false;
     for(int cluster = 0; cluster < clusters; cluster++){
         auto sector = available_sector;
         for(int i = 0; i < hdd.getClusterSize(); i++, sector.sector_index++){
@@ -43,11 +47,12 @@ bool System::writeFile(std::string filename){
         }
         available_sector = hdd.getNextTrack(available_sector);
     }
-
+    file.close();
     return true;
 }
 
-bool System::readFile(std::string filename){
+bool System::readFile(std::string filename)
+{
     auto pos = fat32.getPosition(filename);
     if(pos == -1)
         return false;
@@ -64,7 +69,8 @@ bool System::readFile(std::string filename){
 }
 
 
-int System::calculateClusters(){
+int System::calculateClusters()
+{
     auto filesize = calculateFileSize();
     int file = (int) (filesize);
     this->filesize = file;
@@ -74,7 +80,8 @@ int System::calculateClusters(){
     return clusters;
 }
 
-std::streampos System::calculateFileSize(){
+std::streampos System::calculateFileSize()
+{
     if(file){
         file.seekg(0, std::ios::beg);
         auto begin = file.tellg();
@@ -84,13 +91,21 @@ std::streampos System::calculateFileSize(){
     }
     else
         std::cout << "file error at calculate file size" << std::endl;
+        std::cout << "verifique se o arquivo existe no diretório" << std::endl;
 
     return std::streampos(-1);
 }
 
-void System::printSizeTable(){
+void System::printSizeTable()
+{
     std::cout << "Nome" << "\t\tTamanho em Disco" << "\tSetores\n";
     fat32.printFileSize();
+    std::cout << "\nENTER para voltar ao menu" << std::endl;
     std::cin.get();
     std::cin.get();
+}
+
+bool System::removeFatItem(std::string filename)
+{
+    return fat32.removeItem(filename);
 }
