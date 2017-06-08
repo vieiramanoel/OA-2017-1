@@ -1,0 +1,13 @@
+#define TEMP_TRANSF_TRILHA = 12;
+#define TEMP_LATENCIA = 6;
+#define TEMP_MEDIO_SEEK = 4;
+
+\\
+int tempo(){
+	int t;
+
+
+
+
+	return t;
+}
