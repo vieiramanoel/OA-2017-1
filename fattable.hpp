@@ -41,7 +41,7 @@ class FatTable
     sectorparams getSector(int position);
     void printFileSize();
     bool removeItem(std::string filename);
-private:
+  private:
     std::unordered_map<std::string, availablesector> table;
     std::unordered_map<std::string, int> size_table;
     std::vector<sectorparams> sector;
