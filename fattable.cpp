@@ -1,4 +1,7 @@
 #include "fattable.hpp"
+#define TEMP_TRANSF_TRILHA = 12;
+#define TEMP_LATENCIA = 6;
+#define TEMP_MEDIO_SEEK = 4;
 
 FatTable::FatTable()
 {
@@ -96,4 +99,17 @@ bool FatTable::removeItem(std::string filename)
     table.erase(filename);
     size_table.erase(filename);
     return true;
+}
+
+int FatTable::readinTime(std::string filename)
+{
+    int numsector = 1;
+    int tempo_p_extent = TEMP_LATENCIA + TEMP_MEDIO_SEEK + TEMP_TRANSF_TRILHA;
+    int pos = getPosition(filename);
+    while(pos != -1)
+    {
+        numsector++;
+        pos = sector[pos].next;
+    }
+    return numsector * tempo_p_extent;   
 }

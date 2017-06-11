@@ -48,6 +48,7 @@ int main()
                 std::cout << "Tente um arquivo existente na FAT\n "
                              "ENTER para continar" << std::endl;
             else
+            	std::cout << "Tempo de leitura: " << readingTime(filename) << 'ms\n' << std::endl
                 std::cout << "Feito! ENTER para continuar" << std::endl;
             std::cin.get();
             std::cin.get();
