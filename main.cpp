@@ -2,6 +2,7 @@
 #include "system.hpp"
 #include <string>
 
+//main has only some menu prints and system(class) calls, as it should be
 int main()
 {
     System system;
@@ -44,12 +45,13 @@ int main()
             std::cout << "Digite o nome do arquivo texto:\n>>> ";
             std::cin >> filename;
             success = system.readFile(filename);
-            if(!success)
+            if(!success){
                 std::cout << "Tente um arquivo existente na FAT\n "
                              "ENTER para continar" << std::endl;
-            else
-            	std::cout << "Tempo de leitura: " << readingTime(filename) << 'ms\n' << std::endl
+            }else{
+                std::cout << "Tempo de leitura: " << system.getTime(filename) << "ms\n" << std::endl;
                 std::cout << "Feito! ENTER para continuar" << std::endl;
+            }
             std::cin.get();
             std::cin.get();
             break;

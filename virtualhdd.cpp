@@ -3,6 +3,7 @@
 #include <iostream>
 VirtualHdd::VirtualHdd()
 {
+   //alocates an 10-size track_array
    cylinder = new track_array[cylinder_amount];
 }
 
@@ -23,7 +24,7 @@ availablesector VirtualHdd::getNextSector()
                 auto sector = cluster*cluster_size;
                 if(cylinder[cylin].isClusterAvailable(track, sector))
                 {
-                    //if you wanna know what indices were found, simply print what's been returned with a cout
+                    //if you wanna know what indices were found, simply print what has been returned with a cout
                     return availablesector(cylin, track, sector);
                 }
             }
@@ -36,15 +37,14 @@ availablesector VirtualHdd::getNextSector()
 void VirtualHdd::write(char *buffer, availablesector sector)
 {
     unsigned char* sec_buffer = getbuffer(sector);
-    for(int i = 0; i < 512; i++){
+    //a strcpy could be used instead of implement this two function,
+    //but we dont wanna include c headers
+    for(int i = 0; i < 512; i++)
         sec_buffer[i] = (unsigned char) buffer[i];
-    }
-//    std::cout << "saved buff: " << sec_buffer << std::endl;
-//    std::cout << "at " << sector << std::endl;
 }
 availablesector VirtualHdd::getNextTrack(availablesector currsector)
 {
-
+    //returns a struct (availablesector) with coordinates for next available sector in parallel write
     while(!cylinder[currsector.cylinder_index].isClusterAvailable(currsector.track_index, currsector.sector_index)){
         if(currsector.track_index == 4){
             currsector = this->getNextSector();

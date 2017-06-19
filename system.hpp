@@ -7,7 +7,9 @@
 #include <string>
 #include <fstream>
 #include <cmath>
-
+/* Class definition for our system (something like kernel, or file manager)
+ * interfaces fat table (virtual) and HDD (physical) having access to both classes
+ */
 class System
 {
   public:
@@ -17,6 +19,7 @@ class System
     bool writeFile(std::string filename);
     void printSizeTable();
     bool removeFatItem(std::string filename);
+    int getTime(std::string filename);
 private:
     VirtualHdd hdd;
     FatTable fat32;

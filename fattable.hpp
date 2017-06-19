@@ -7,21 +7,29 @@
 #include <sstream>
 #include "blockdefinitions.hpp"
 
+/* Definition of FatTable class which map all sectors to
+ * a table using FAT theory
+ * To abstract tables and multdimensional matrices, unordered_map
+ * was used (C++14), this data struct also map its keys using hashing
+ * making search in it extremely fast
+ */
 
 struct sectorparams
 {
     bool used {false};
     bool eof {false};
-    availablesector sector;
+    availablesector sector; //hold sector coordinates
     int next{-1};
     sectorparams(bool used, bool eof,
                  availablesector sector)
     {
+        //constructor using parameters
         this->used = used;
         this->eof = eof;
         this->sector = sector;
     }
     sectorparams(){
+        //void constructor
         used = false;
         eof = false;
         availablesector sector;

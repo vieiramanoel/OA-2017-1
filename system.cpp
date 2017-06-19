@@ -20,13 +20,20 @@ void System::setFile(std::string filename)
 
 bool System::writeFile(std::string filename)
 {
+    //setFile method is used to set what file we're working on
+    //takes care of all file operation
     setFile(filename);
+
+    //calculate clusters returns the number of clusters that the file
+    //occup rounded up to next int
     auto clusters = calculateClusters();
     if(clusters == -1){
         return false;
     }
+    //save on available sector struct next availabe sector on HDD
     auto available_sector = hdd.getNextSector();
     file.seekg(0, std::ios::beg);
+    //addNewName methods returns false if file name already exists in FAT
     bool added = fat32.addNewName(filename, available_sector, filesize);
     if(!added)
         return false;
@@ -41,7 +48,7 @@ bool System::writeFile(std::string filename)
                 fat32.addName(sector, true);
             else
                 fat32.addName(sector, false);
-
+                //if is last sector, save an EOF flag on FAT, else, EOF=false
             hdd.write(buffer, sector);
             delete[] buffer;
         }
@@ -59,9 +66,12 @@ bool System::readFile(std::string filename)
     auto params = fat32.getSector(pos);
     std::ofstream extfile("saida.txt");
     do{
+        //reinterpret_cast used for conversion between c-array and c++ string
         std::string buffer = reinterpret_cast<char*>(hdd.getbuffer(params.sector));
+        //write buffer to output file
         extfile << buffer;
         pos = params.next;
+        //get next position if is not EOF
         if(pos != -1)
             params = fat32.getSector(pos);
     }while(pos != -1);
@@ -108,4 +118,9 @@ void System::printSizeTable()
 bool System::removeFatItem(std::string filename)
 {
     return fat32.removeItem(filename);
+}
+
+int System::getTime(std::string filename)
+{
+    return fat32.readinTime(filename);
 }

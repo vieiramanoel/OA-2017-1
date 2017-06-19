@@ -1,7 +1,7 @@
 #include "fattable.hpp"
-#define TEMP_TRANSF_TRILHA = 12;
-#define TEMP_LATENCIA = 6;
-#define TEMP_MEDIO_SEEK = 4;
+#define TEMP_TRANSF_TRILHA 12
+#define TEMP_LATENCIA 6
+#define TEMP_MEDIO_SEEK 4
 
 FatTable::FatTable()
 {
@@ -16,6 +16,7 @@ FatTable::~FatTable()
 
 bool FatTable::addNewName(std::string filename, availablesector sector, int filesize)
 {
+    //method called everytime a new file is added to HDD
     int hasfileattable = getPosition(filename);
     if(hasfileattable != -1){
             std::cout << "Arquivo já existente na FAT" << std::endl;
@@ -40,7 +41,9 @@ int FatTable::getPosition(std::string filename)
 
 void FatTable::addName(availablesector sector, bool iseof)
 {
-
+    //for all new sectors on HDD add it to a space on vector
+    //calculation for position given sector's coordinates is made
+    //at calculatePosition method
     int position = calculatePosition(sector);
     this->sector[position] = sectorparams(true, iseof, sector);
     if(last != nullptr)
@@ -66,6 +69,8 @@ void FatTable::printFileSize()
 
 std::string FatTable::printSectors(std::string filename)
 {
+    //runs all vector spaces that has filename sectors and return a string
+    //whith all them
     int pos = getPosition(filename);
     std::ostringstream oss;
     while(pos != -1){
@@ -77,7 +82,10 @@ std::string FatTable::printSectors(std::string filename)
 
 int FatTable::calculatePosition(availablesector sector)
 {
-    //some questions about position calculation, check later
+    //calculations for vector position of given sector
+    //i.e
+    // cylin = 0, track = 1, sector = 0, will be saved
+    //at position 60 of vector
     return 300*sector.cylinder_index +
             60*sector.track_index + sector.sector_index;
 }
@@ -103,13 +111,15 @@ bool FatTable::removeItem(std::string filename)
 
 int FatTable::readinTime(std::string filename)
 {
+    //return time for read on virtual hdd
     int numsector = 1;
-    int tempo_p_extent = TEMP_LATENCIA + TEMP_MEDIO_SEEK + TEMP_TRANSF_TRILHA;
+    int extent_time = TEMP_LATENCIA + TEMP_MEDIO_SEEK + TEMP_TRANSF_TRILHA;
     int pos = getPosition(filename);
     while(pos != -1)
     {
         numsector++;
         pos = sector[pos].next;
     }
-    return numsector * tempo_p_extent;   
+    return (numsector * extent_time);
 }
+
