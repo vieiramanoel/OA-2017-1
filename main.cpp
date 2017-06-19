@@ -19,6 +19,7 @@ int main()
         std::cout << "2 - Ler arquivo apartir da FAT" << std::endl;
         std::cout << "3 - Apagar arquivo da tabela FAT" << std::endl;
         std::cout << "4 - Mostrar Tabela FAT" << std::endl;
+        std::cout << "5 - Sair" << std::endl;
         std::cout << ">>> ";
         std::cin >> rawentry;
         if(rawentry.size() > sizeof(int)){
